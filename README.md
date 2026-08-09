@@ -1,5 +1,12 @@
-# 🧠 shesha-memory
+# shesha-memory
 
+**hierarchical memory + learning** — Episodic/semantic memory, habits, intentions, context assembly.
+
+- Layer: Mind (Mind)
+- License: GPL-3.0
+- Part of: [Shesha ecosystem](https://github.com/gaganjainse/shesha-ecosystem)
+
+---
 **Hierarchical memory + habit learning + context-window management for Shesha.**
 
 Solves two problems at once: the model can't remember across turns, and its
