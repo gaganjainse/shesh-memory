@@ -1,0 +1,100 @@
+"""MCP server exposing memory/learning tools to the agent."""
+from __future__ import annotations
+
+from mcp.server.fastmcp import FastMCP
+
+from .context import Budget, ContextAssembler
+from .habits import HabitLearner
+from .store import MemoryStore
+
+mcp = FastMCP("sesha-memory")
+
+# A process-local store; overridable for tests.
+_store: MemoryStore | None = None
+_learner: HabitLearner | None = None
+
+
+def _s() -> MemoryStore:
+    global _store
+    if _store is None:
+        _store = MemoryStore()
+    return _store
+
+
+def _l() -> HabitLearner:
+    global _learner
+    if _learner is None:
+        _learner = HabitLearner(_s())
+    return _learner
+
+
+@mcp.tool()
+def remember(kind: str, content: str, **metadata) -> dict:
+    """Record an episode (observation, action, outcome, conversation)."""
+    ep = _s().record(kind, content, **metadata)
+    return {"ok": True, "ts": ep.ts}
+
+
+@mcp.tool()
+def recall(query: str, limit: int = 8) -> list[dict]:
+    """Retrieve relevant past episodes by keyword/search."""
+    return [{"ts": e.ts, "kind": e.kind, "content": e.content}
+            for e in _s().search(query, limit)]
+
+
+@mcp.tool()
+def learn_habit(signature: str, description: str, success: bool = True) -> dict:
+    """Note a recurring pattern so it can become a learned habit."""
+    h = _l().observe(signature, description, success=success)
+    return {"signature": h.signature, "confidence": round(h.confidence, 2),
+            "promoted": h.promoted, "count": h.count}
+
+
+@mcp.tool()
+def list_habits(include_archived: bool = False) -> list[dict]:
+    """List learned habits (promoted patterns about the user)."""
+    out = []
+    for h in _l().habits.values():
+        if h.archived and not include_archived:
+            continue
+        out.append({
+            "signature": h.signature, "description": h.description,
+            "count": h.count, "confidence": round(h.confidence, 2),
+            "promoted": h.promoted, "archived": h.archived,
+        })
+    return out
+
+
+@mcp.tool()
+def note_fact(fact: str) -> dict:
+    """Append a durable semantic fact about the user/preferences/intentions."""
+    _s().append_semantic(fact)
+    return {"ok": True}
+
+
+@mcp.tool()
+def assemble_context(query: str = "", working: str = "", skills: str = "",
+                     max_tokens: int = 6000) -> dict:
+    """Build a token-bounded context block for the current turn."""
+    asm = ContextAssembler(_s(), Budget(total=max_tokens))
+    sections = asm.build(query=query, working=working, skills=skills)
+    return {
+        "prompt": asm.render(sections),
+        "tokens": sum(s.tokens for s in sections),
+        "sections": [s.name for s in sections],
+    }
+
+
+@mcp.tool()
+def decay_habits() -> list[dict]:
+    """Run daily decay; archives habits that stopped recurring."""
+    return [{"signature": h.signature, "description": h.description}
+            for h in _l().tick_decay()]
+
+
+def main() -> None:
+    mcp.run(transport="stdio")
+
+
+if __name__ == "__main__":
+    main()
