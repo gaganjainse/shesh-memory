@@ -8,7 +8,7 @@ from .habits import HabitLearner
 from .intentions import Intentions, Mannerisms
 from .store import MemoryStore
 
-mcp = FastMCP("sesha-memory")
+mcp = FastMCP("shesha-memory")
 
 # A process-local store; overridable for tests.
 _store: MemoryStore | None = None

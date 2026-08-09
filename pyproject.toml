@@ -1,7 +1,7 @@
 [project]
-name = "sesha-memory"
+name = "shesha-memory"
 version = "0.1.0"
-description = "Sesha Mind: hierarchical memory, habit/intention learning, and token-bounded context assembly"
+description = "Shesha Mind: hierarchical memory, habit/intention learning, and token-bounded context assembly"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "GPL-3.0-or-later" }
@@ -12,7 +12,7 @@ dependencies = ["mcp[cli]>=1.0", "fastmcp>=0.1"]
 dev = ["pytest>=8.0", "ruff>=0.6"]
 
 [project.scripts]
-sesha-memory-mcp = "sesha_memory.server:main"
+shesha-memory-mcp = "shesha_memory.server:main"
 
 [tool.uv]
 environments = ["sys_platform == 'linux'"]

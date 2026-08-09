@@ -8,9 +8,9 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from sesha_memory.context import Budget, ContextAssembler, approx_tokens  # noqa: E402
-from sesha_memory.habits import HabitLearner  # noqa: E402
-from sesha_memory.store import MemoryStore  # noqa: E402
+from shesha_memory.context import Budget, ContextAssembler, approx_tokens  # noqa: E402
+from shesha_memory.habits import HabitLearner  # noqa: E402
+from shesha_memory.store import MemoryStore  # noqa: E402
 
 
 @pytest.fixture()
@@ -106,7 +106,7 @@ def test_approx_tokens_is_conservative():
 
 def test_mcp_server_tools_use_store(tmp_path, monkeypatch):
     # Import server and point it at a temp store
-    from sesha_memory import server
+    from shesha_memory import server
     monkeypatch.setattr(server, "_store", MemoryStore(root=tmp_path, use_fts=False))
     monkeypatch.setattr(server, "_learner", None)
     assert server.remember("action", "did a thing")["ok"]

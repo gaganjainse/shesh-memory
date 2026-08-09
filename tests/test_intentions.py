@@ -6,15 +6,15 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from sesha_memory.context import Budget, ContextAssembler  # noqa: E402
-from sesha_memory.intentions import Intentions, Mannerisms  # noqa: E402
-from sesha_memory.server import (  # noqa: E402
+from shesha_memory.context import Budget, ContextAssembler  # noqa: E402
+from shesha_memory.intentions import Intentions, Mannerisms  # noqa: E402
+from shesha_memory.server import (  # noqa: E402
     add_intention,
     complete_intention,
     list_intentions,
     set_mannerism,
 )
-from sesha_memory.store import MemoryStore  # noqa: E402
+from shesha_memory.store import MemoryStore  # noqa: E402
 
 
 def test_mannerism_seed_exists(tmp_path):
@@ -40,18 +40,18 @@ def test_context_includes_mannerisms_and_intentions(tmp_path):
     store = MemoryStore(root=tmp_path, use_fts=False)
     store.write_semantic("User likes Rust.")
     intentions = Intentions(tmp_path)
-    intentions.add("ship sesha-memory", priority=1)
+    intentions.add("ship shesha-memory", priority=1)
     asm = ContextAssembler(store, Budget(total=3000))
     sections = asm.build(query="memory", working="fix tests")
     rendered = asm.render(sections)
     assert "## mannerisms" in rendered
     assert "## intentions" in rendered
-    assert "ship sesha-memory" in rendered
+    assert "ship shesha-memory" in rendered
     store.close()
 
 
 def test_mcp_intention_tools(tmp_path, monkeypatch):
-    from sesha_memory import server
+    from shesha_memory import server
     store = MemoryStore(root=tmp_path, use_fts=False)
     monkeypatch.setattr(server, "_store", store)
     monkeypatch.setattr(server, "_intentions", None)
