@@ -18,6 +18,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
+from .intentions import Intentions, Mannerisms
 from .store import Episode, MemoryStore
 
 
@@ -91,32 +92,41 @@ class ContextAssembler:
         b = self.budget
         sections: list[ContextSection] = []
 
-        # 1. Semantic facts (durable, compact)
+        # 1. Mannerisms/style (sets tone, very compact)
+        sections.append(ContextSection(
+            "mannerisms", _trim(Mannerisms(self.store.root).text(), 600)))
+
+        # 2. Semantic facts (durable, compact)
         sections.append(ContextSection(
             "semantic", _trim(self.store.read_semantic(), b.breakdown["semantic"])))
 
-        # 2. Active habits (very compact — one line each)
+        # 3. Active intentions (what the user is working toward)
+        intentions = Intentions(self.store.root).render()
+        if intentions:
+            sections.append(ContextSection("intentions", _trim(intentions, 600)))
+
+        # 4. Active habits (very compact — one line each)
         habits = "\n".join(
             f"- {h.description}" for h in self._load_active_habits()
         )
         if habits:
             sections.append(ContextSection("habits", habits))
 
-        # 3. Skills / safety (fixed compact block)
+        # 5. Skills / safety (fixed compact block)
         if skills:
             sections.append(ContextSection("skills", _trim(skills, b.breakdown["skills"])))
 
-        # 4. Working memory (current task)
+        # 6. Working memory (current task)
         if working:
             sections.append(ContextSection("working", _trim(working, b.breakdown["working"])))
 
-        # 5. Relevant episodes for this query
+        # 7. Relevant episodes for this query
         if query:
             rel = self.retriever(query, n_relevant)
             rel_text = "\n".join(self._fmt(e) for e in rel)
             sections.append(ContextSection("relevant", _trim(rel_text, b.breakdown["relevant"])))
 
-        # 6. Recent episodes (continuity)
+        # 8. Recent episodes (continuity)
         rec = self.store.recent(n_recent)
         rec_text = "\n".join(self._fmt(e) for e in rec[-n_recent:])
         sections.append(ContextSection("recent", _trim(rec_text, b.breakdown["recent"])))
@@ -134,8 +144,10 @@ class ContextAssembler:
         return f"[{e.kind}] {e.content}"
 
     def _enforce_total(self, sections: list[ContextSection]) -> list[ContextSection]:
-        # Priority high→low: semantic, habits, skills, working, relevant, recent.
-        order = ["semantic", "habits", "skills", "working", "relevant", "recent"]
+        # Priority high→low: mannerisms, intentions, semantic, habits, skills,
+        # working, relevant, recent.
+        order = ["mannerisms", "intentions", "semantic", "habits", "skills",
+                 "working", "relevant", "recent"]
         sections.sort(key=lambda s: order.index(s.name) if s.name in order else 99)
         used = 0
         kept: list[ContextSection] = []
@@ -146,7 +158,7 @@ class ContextAssembler:
             trimmed = _trim(s.content, cap)
             if trimmed.strip():
                 kept.append(ContextSection(s.name, trimmed))
-                used += approx_tokens(trimmed)
+                used += approx_tokens(f"## {s.name}\n{trimmed}")
         return kept
 
     def render(self, sections: list[ContextSection]) -> str:

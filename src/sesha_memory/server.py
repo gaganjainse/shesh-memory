@@ -5,6 +5,7 @@ from mcp.server.fastmcp import FastMCP
 
 from .context import Budget, ContextAssembler
 from .habits import HabitLearner
+from .intentions import Intentions, Mannerisms
 from .store import MemoryStore
 
 mcp = FastMCP("sesha-memory")
@@ -70,6 +71,44 @@ def note_fact(fact: str) -> dict:
     """Append a durable semantic fact about the user/preferences/intentions."""
     _s().append_semantic(fact)
     return {"ok": True}
+
+
+@mcp.tool()
+def set_mannerism(preference: str) -> dict:
+    """Record a communication/style preference (how the user likes responses)."""
+    Mannerisms(_s().root).append(preference)
+    return {"ok": True}
+
+
+_intentions: Intentions | None = None
+
+
+def _i() -> Intentions:
+    global _intentions
+    if _intentions is None:
+        _intentions = Intentions(_s().root)
+    return _intentions
+
+
+@mcp.tool()
+def add_intention(title: str, priority: int = 3) -> dict:
+    """Record something the user is trying to achieve (active goal)."""
+    it = _i().add(title, priority)
+    return {"id": it.id, "title": it.title, "priority": it.priority}
+
+
+@mcp.tool()
+def complete_intention(intention_id: str) -> dict:
+    """Mark an intention/goal as completed."""
+    _i().complete(intention_id)
+    return {"ok": True}
+
+
+@mcp.tool()
+def list_intentions() -> list[dict]:
+    """List active intentions/goals, highest priority first."""
+    return [{"id": i.id, "title": i.title, "priority": i.priority}
+            for i in _i().active()]
 
 
 @mcp.tool()
