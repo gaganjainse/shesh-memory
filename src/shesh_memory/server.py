@@ -4,7 +4,7 @@ from __future__ import annotations
 from mcp.server.fastmcp import FastMCP
 
 try:
-    from shesha_audit.mcp_guard import GuardedMCP as _MCP
+    from shesh_audit.mcp_guard import GuardedMCP as _MCP
 except ImportError:
     _MCP = FastMCP
 
@@ -13,7 +13,7 @@ from .habits import HabitLearner
 from .intentions import Intentions, Mannerisms
 from .store import MemoryStore
 
-mcp = _MCP("shesha-memory")
+mcp = _MCP("shesh-memory")
 
 # A process-local store; overridable for tests.
 _store: MemoryStore | None = None

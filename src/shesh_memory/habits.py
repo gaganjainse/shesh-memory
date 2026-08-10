@@ -9,7 +9,7 @@ A habit is something like:
   - "prefers summaries in bullet points"
   - "commits Rust projects before running tests"
 
-Observations come from actions Shesha takes/sees. The learner:
+Observations come from actions Shesh takes/sees. The learner:
   1. normalizes them into a signature,
   2. counts occurrences and tracks first/last seen and success rate,
   3. promotes to a learned habit when evidence crosses a threshold,

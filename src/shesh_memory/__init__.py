@@ -1,4 +1,4 @@
-"""shesha-memory: hierarchical memory + context-window management.
+"""shesh-memory: hierarchical memory + context-window management.
 
 The model's context window is finite. This module solves retention by
 organizing memory into layers and only surfacing what a turn needs:

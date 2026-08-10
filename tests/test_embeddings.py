@@ -6,10 +6,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from shesha_memory.embeddings import (  # noqa: E402
+from shesh_memory.embeddings import (  # noqa: E402
     LOCAL_DIM, cosine, local_embedder,
 )
-from shesha_memory.vectorstore import VectorStore  # noqa: E402
+from shesh_memory.vectorstore import VectorStore  # noqa: E402
 
 
 def test_local_embedder_dimension_and_normalization():

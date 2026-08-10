@@ -7,10 +7,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from shesha_memory.compaction import (  # noqa: E402
+from shesh_memory.compaction import (  # noqa: E402
     CompactionConfig, compact, simple_summarizer,
 )
-from shesha_memory.store import MemoryStore  # noqa: E402
+from shesh_memory.store import MemoryStore  # noqa: E402
 
 
 DAY = 86_400
@@ -18,7 +18,7 @@ DAY = 86_400
 
 def _seed(store, now, ages_days, kind="observation"):
     # Write backdated episodes directly (record() would add a current-timestamp line).
-    from shesha_memory.store import Episode
+    from shesh_memory.store import Episode
     for i, age in enumerate(ages_days):
         ep = Episode(ts=now - age * DAY, kind=kind, content=f"event {i} age {age}")
         with store.episodes_path.open("a", encoding="utf-8") as f:

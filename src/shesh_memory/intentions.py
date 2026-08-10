@@ -7,7 +7,7 @@ Intentions are different from habits:
   lifecycle: active -> completed/abandoned, and a priority.
 - MANNERISMS are communication/style preferences (terse, examples-first, etc.)
 
-Both feed the ContextAssembler so Shesha adapts tone and suggestions without the
+Both feed the ContextAssembler so Shesh adapts tone and suggestions without the
 model having to re-learn them every turn. They're stored as editable Markdown so
 the user stays in control — no opaque learned state.
 """

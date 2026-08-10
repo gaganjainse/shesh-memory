@@ -29,7 +29,7 @@ DAY = 86_400
 def simple_summarizer(episodes: list[dict[str, Any]]) -> str:
     """Deterministic fallback: group by kind and list key facts.
 
-    Production replaces this with an LLM call via shesha-mind.
+    Production replaces this with an LLM call via shesh-mind.
     """
     if not episodes:
         return ""
