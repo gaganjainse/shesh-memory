@@ -160,3 +160,33 @@ def compact_memory(summarize_after_days: float = 14.0,
                            delete_after_days=delete_after_days)
     report = compact(Path(DATA_DIR), cfg)
     return report.to_dict()
+
+
+# ── semantic/vector search (optional) ────────────────────────────────
+_vstore = None
+
+def _vector_store():
+    global _vstore
+    if _vstore is None:
+        from pathlib import Path
+        from .embeddings import local_embedder, LOCAL_DIM
+        from .vectorstore import VectorStore
+        from .store import DATA_DIR
+        _vstore = VectorStore(DATA_DIR / "vectors.sqlite", local_embedder(), LOCAL_DIM)
+    return _vstore
+
+
+@mcp.tool()
+def semantic_search(query: str, limit: int = 5) -> list[dict]:
+    """Search memories by embedding similarity (local hash embeddings offline;
+    swap in Ollama nomic-embed-text for real semantics)."""
+    return _vector_store().search(query, limit)
+
+
+@mcp.tool()
+def index_memory(text: str, memory_id: str | None = None, **metadata) -> dict:
+    """Add a text to the semantic vector index."""
+    import uuid
+    mid = memory_id or uuid.uuid4().hex[:12]
+    _vector_store().upsert(mid, text, metadata)
+    return {"ok": True, "id": mid}
