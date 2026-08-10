@@ -142,3 +142,21 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+@mcp.tool()
+def compact_memory(summarize_after_days: float = 14.0,
+                   delete_after_days: float = 90.0) -> dict:
+    """Summarize old episodes into semantic memory and trim the episode log.
+
+    Runs retention: episodes older than summarize_after_days are compacted
+    (via the default summarizer; LLM-backed summarization can be injected),
+    episodes older than delete_after_days are removed.
+    """
+    from pathlib import Path
+    from .compaction import CompactionConfig, compact
+    from .store import DATA_DIR
+    cfg = CompactionConfig(summarize_after_days=summarize_after_days,
+                           delete_after_days=delete_after_days)
+    report = compact(Path(DATA_DIR), cfg)
+    return report.to_dict()
