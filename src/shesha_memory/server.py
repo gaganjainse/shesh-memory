@@ -3,12 +3,17 @@ from __future__ import annotations
 
 from mcp.server.fastmcp import FastMCP
 
+try:
+    from shesha_audit.mcp_guard import GuardedMCP as _MCP
+except ImportError:
+    _MCP = FastMCP
+
 from .context import Budget, ContextAssembler
 from .habits import HabitLearner
 from .intentions import Intentions, Mannerisms
 from .store import MemoryStore
 
-mcp = FastMCP("shesha-memory")
+mcp = _MCP("shesha-memory")
 
 # A process-local store; overridable for tests.
 _store: MemoryStore | None = None
