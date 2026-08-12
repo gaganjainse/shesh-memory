@@ -1,7 +1,7 @@
 """MCP server exposing memory/learning tools to the agent."""
 from __future__ import annotations
 
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 
 try:
     from shesh_audit.mcp_guard import GuardedMCP as _MCP
@@ -35,9 +35,13 @@ def _l() -> HabitLearner:
 
 
 @mcp.tool()
-def remember(kind: str, content: str, **metadata) -> dict:
-    """Record an episode (observation, action, outcome, conversation)."""
-    ep = _s().record(kind, content, **metadata)
+def remember(kind: str, content: str, metadata: dict | None = None) -> dict:
+    """Record an episode (observation, action, outcome, conversation).
+
+    metadata carries optional structured fields (source, tags). A dict
+    parameter, not **kwargs: FastMCP 3 schemas cannot express **kwargs.
+    """
+    ep = _s().record(kind, content, **(metadata or {}))
     return {"ok": True, "ts": ep.ts}
 
 
@@ -184,9 +188,11 @@ def semantic_search(query: str, limit: int = 5) -> list[dict]:
 
 
 @mcp.tool()
-def index_memory(text: str, memory_id: str | None = None, **metadata) -> dict:
-    """Add a text to the semantic vector index."""
+def index_memory(text: str, memory_id: str | None = None,
+                 metadata: dict | None = None) -> dict:
+    """Add a text to the semantic vector index (metadata as explicit dict:
+    **kwargs cannot be expressed in FastMCP 3 tool schemas)."""
     import uuid
     mid = memory_id or uuid.uuid4().hex[:12]
-    _vector_store().upsert(mid, text, metadata)
+    _vector_store().upsert(mid, text, metadata or {})
     return {"ok": True, "id": mid}
