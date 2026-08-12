@@ -61,5 +61,5 @@ uv run shesh-memory-mcp
 ```
 
 Storage is plain JSONL/Markdown/SQLite under
-`~/.local/share/shesha/memory/` — human-readable, portable, no vector DB required
+`~/.local/share/shesh/memory/` — human-readable, portable, no vector DB required
 (embedding retrieval is an optional future provider).

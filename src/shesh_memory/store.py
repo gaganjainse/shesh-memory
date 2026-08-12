@@ -5,7 +5,7 @@ Design goals:
 - memory is human-readable/editable (markdown for semantic, jsonl for events)
 - cheap to write; retrieval can be affordably expensive
 
-Files under XDG_DATA_HOME/shesha/memory/:
+Files under XDG_DATA_HOME/shesh/memory/:
   episodes.jsonl      one JSON event per line (append-only)
   semantic.md         durable facts as a markdown list
   habits.json         learned habits with evidence counts

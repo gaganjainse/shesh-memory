@@ -8,10 +8,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from shesh_memory.compaction import (  # noqa: E402
-    CompactionConfig, compact, simple_summarizer,
+    CompactionConfig,
+    compact,
+    simple_summarizer,
 )
 from shesh_memory.store import MemoryStore  # noqa: E402
-
 
 DAY = 86_400
 
@@ -49,7 +50,11 @@ def test_compact_summarizes_old_and_trims(tmp_path):
     assert "Compacted" in semantic
 
     # episode log keeps only the recent one
-    lines = [l for l in (tmp_path / "episodes.jsonl").read_text().splitlines() if l.strip()]
+    lines = [
+        line
+        for line in (tmp_path / "episodes.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
     assert len(lines) == 1
     assert "age 0.1" in lines[0]
 

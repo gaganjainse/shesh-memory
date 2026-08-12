@@ -154,6 +154,7 @@ def compact_memory(summarize_after_days: float = 14.0,
     episodes older than delete_after_days are removed.
     """
     from pathlib import Path
+
     from .compaction import CompactionConfig, compact
     from .store import DATA_DIR
     cfg = CompactionConfig(summarize_after_days=summarize_after_days,
@@ -168,10 +169,9 @@ _vstore = None
 def _vector_store():
     global _vstore
     if _vstore is None:
-        from pathlib import Path
-        from .embeddings import local_embedder, LOCAL_DIM
-        from .vectorstore import VectorStore
+        from .embeddings import LOCAL_DIM, local_embedder
         from .store import DATA_DIR
+        from .vectorstore import VectorStore
         _vstore = VectorStore(DATA_DIR / "vectors.sqlite", local_embedder(), LOCAL_DIM)
     return _vstore
 
