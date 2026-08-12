@@ -63,3 +63,8 @@ uv run shesh-memory-mcp
 Storage is plain JSONL/Markdown/SQLite under
 `~/.local/share/shesh/memory/` — human-readable, portable, no vector DB required
 (embedding retrieval is an optional future provider).
+
+## Security
+
+Security posture and vulnerability reporting: [canonical ecosystem security
+policy](https://github.com/gaganjainse/shesh-ecosystem/blob/main/SECURITY.md).
