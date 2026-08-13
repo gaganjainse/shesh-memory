@@ -63,6 +63,7 @@ def test_habit_decay_archives_stale(store):
     # Force it old and decayed
     h = learner.habits["sig"]
     h.last_seen -= 100 * 24 * 3600  # 100 days
+    h.last_decayed -= 100 * 24 * 3600  # 100 days since last decay run
     archived = learner.tick_decay()
     assert any(x.signature == "sig" for x in archived)
     assert not any(x.signature == "sig" for x in learner.active_habits())
