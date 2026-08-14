@@ -1,21 +1,33 @@
-# shesh-memory
+# 🧠 shesh-memory
 
-**hierarchical memory + learning** — Episodic/semantic memory, habits, intentions, context assembly.
+> **Hierarchical memory + habit learning for Shesh.** Keeps memory in layers and
+> assembles a token-bounded context for every turn, so the agent remembers across
+> turns without blowing its context window.
 
-- Layer: Mind (Mind)
-- License: GPL-3.0-or-later
-- Part of: [Shesh ecosystem](https://github.com/gaganjainse/shesh-ecosystem)
+![Python](https://img.shields.io/badge/Python-3.11%2B-blue?style=for-the-badge&logo=python) ![License](https://img.shields.io/badge/License-GPL--3.0--or--later-blue?style=for-the-badge) ![Tests](https://img.shields.io/badge/Tests-33-success?style=for-the-badge) ![CI](https://github.com/gaganjainse/shesh-memory/actions/workflows/ci.yml.yml/badge.svg)
+
+- **License:** GPL-3.0-or-later
+- **Owner:** Gagan Jain ([@gaganjainse](https://github.com/gaganjainse))
+- **Layer:** Mind (memory + learning)
+- **Part of:** [shesh-ecosystem](https://github.com/gaganjainse/shesh-ecosystem)
 
 ---
-**Hierarchical memory + habit learning + context-window management for Shesh.**
 
-Solves two problems at once: the model can't remember across turns, and its
-context window is finite. This component keeps memory in layers and assembles a
-token-bounded prompt for each turn.
+## Why this repo exists
 
-- License: GPL-3.0-or-later
-- Layer: Mind (memory + learning)
-- Part of: [Shesh ecosystem](https://github.com/gaganjainse/shesh-ecosystem)
+A model can't remember across turns, and its context window is finite. This
+component solves both at once: memories are stored in layers by retention, and a
+token-bounded prompt is assembled from the relevant ones each turn.
+
+---
+
+## Quick start
+
+```bash
+uv sync --extra dev
+uv run pytest -q        # 33 tests
+uv run ruff check .
+```
 
 ## Memory layers
 
@@ -24,50 +36,23 @@ token-bounded prompt for each turn.
 | **working** | current task/session | per-turn |
 | **episodic** | timestamped events (jsonl + SQLite FTS) | append-only, retrieved by relevance |
 | **semantic** | durable facts about you/preferences/intentions (markdown) | long-term |
-| **procedural/habits** | learned patterns with evidence counts | promoted/decayed |
+| **procedural / habits** | learned patterns with evidence counts | promoted / decayed |
 | **skills** | how to do things | loaded per task |
 
-## Habit learning
+Habit learning normalizes observations into signatures counted with reliability;
+a pattern becomes a **candidate habit** only past a confidence threshold, and
+habits decay/archive when stale — promotions are reviewable, never silent.
 
-Observations are normalized into signatures and counted with reliability. When a
-pattern's confidence crosses a threshold, it becomes a **candidate habit**; habits
-decay over time and archive when stale. Promotions are reviewable — Shesh never
-silently changes behavior from one coincidence.
+## Status
 
-## Context assembly
+Component CI is green (reusable ecosystem pipeline). Security posture and
+vulnerability reporting: [SECURITY.md](SECURITY.md).
 
-`assemble_context(query, working, max_tokens)` returns a structured prompt that
-fits the model's budget, prioritizing semantic facts → active habits → skills →
-working task → relevant episodes → recent tail, trimming the lowest-priority
-sections first.
+## Documentation index
 
-## Tools (MCP, stdio)
+- **Part of:** [shesh-ecosystem](https://github.com/gaganjainse/shesh-ecosystem)
+- **Compiled reading:** [shesh-docs](https://github.com/gaganjainse/shesh-docs)
 
-- `remember(kind, content)` — record an episode
-- `recall(query)` — search past episodes
-- `note_fact(fact)` — durable semantic memory
-- `learn_habit(signature, description, success)` — feed the habit learner
-- `list_habits()`
-- `decay_habits()` — daily decay/archive
-- `assemble_context(...)` — build a token-bounded prompt
+## License
 
-## Develop
-
-```bash
-uv sync --extra dev
-uv run pytest -q          # 11 offline tests
-uv run ruff check .
-uv run shesh-memory-mcp
-```
-
-Storage is plain JSONL/Markdown/SQLite under
-`~/.local/share/shesh/memory/` — human-readable, portable, no vector DB required
-(embedding retrieval is an optional future provider).
-
-## Security
-
-Security posture and vulnerability reporting: [canonical ecosystem security
-policy](https://github.com/gaganjainse/shesh-ecosystem/blob/main/SECURITY.md).
-## 📚 Docs
-
-Fleet-wide reading compilation: [shesh-docs](https://github.com/gaganjainse/shesh-docs).
+GPL-3.0-or-later — see [LICENSE](LICENSE).
