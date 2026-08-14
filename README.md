@@ -43,6 +43,10 @@ Habit learning normalizes observations into signatures counted with reliability;
 a pattern becomes a **candidate habit** only past a confidence threshold, and
 habits decay/archive when stale — promotions are reviewable, never silent.
 
+
+> **Reproducible install:** `uv.lock` pins the full dependency tree. Install with
+> `uv sync --frozen` (or `uv pip install -r <(uv export --frozen)`) for a locked build.
+
 ## Status
 
 Component CI is green (reusable ecosystem pipeline). Security posture and
