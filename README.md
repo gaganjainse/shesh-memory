@@ -3,7 +3,7 @@
 **hierarchical memory + learning** — Episodic/semantic memory, habits, intentions, context assembly.
 
 - Layer: Mind (Mind)
-- License: GPL-3.0
+- License: GPL-3.0-or-later
 - Part of: [Shesh ecosystem](https://github.com/gaganjainse/shesh-ecosystem)
 
 ---
@@ -13,7 +13,7 @@ Solves two problems at once: the model can't remember across turns, and its
 context window is finite. This component keeps memory in layers and assembles a
 token-bounded prompt for each turn.
 
-- License: GPL-3.0
+- License: GPL-3.0-or-later
 - Layer: Mind (memory + learning)
 - Part of: [Shesh ecosystem](https://github.com/gaganjainse/shesh-ecosystem)
 
