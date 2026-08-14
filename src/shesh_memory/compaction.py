@@ -127,7 +127,6 @@ def compact(
         report.summarized = len(to_summarize)
         # Once summarized, these episodes are dropped from the live log
         # (their content lives in semantic memory).
-        kept = kept  # no change; to_summarize is removed below
 
     # Rewrite the episode log: keep only recent episodes. The summarized band
     # is removed (its content now lives in semantic.md); the delete band too.
