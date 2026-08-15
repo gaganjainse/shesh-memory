@@ -16,17 +16,17 @@ _store: MemoryStore | None = None
 _learner: HabitLearner | None = None
 
 
-def _s() -> MemoryStore:
+def _get_store() -> MemoryStore:
     global _store
     if _store is None:
         _store = MemoryStore()
     return _store
 
 
-def _l() -> HabitLearner:
+def _get_learner() -> HabitLearner:
     global _learner
     if _learner is None:
-        _learner = HabitLearner(_s())
+        _learner = HabitLearner(_get_store())
     return _learner
 
 
@@ -37,7 +37,7 @@ def remember(kind: str, content: str, metadata: dict | None = None) -> dict:
     metadata carries optional structured fields (source, tags). A dict
     parameter, not **kwargs: FastMCP 3 schemas cannot express **kwargs.
     """
-    ep = _s().record(kind, content, **(metadata or {}))
+    ep = _get_store().record(kind, content, **(metadata or {}))
     return {"ok": True, "ts": ep.ts}
 
 
@@ -45,13 +45,13 @@ def remember(kind: str, content: str, metadata: dict | None = None) -> dict:
 def recall(query: str, limit: int = 8) -> list[dict]:
     """Retrieve relevant past episodes by keyword/search."""
     return [{"ts": e.ts, "kind": e.kind, "content": e.content}
-            for e in _s().search(query, limit)]
+            for e in _get_store().search(query, limit)]
 
 
 @mcp.tool()
 def learn_habit(signature: str, description: str, success: bool = True) -> dict:
     """Note a recurring pattern so it can become a learned habit."""
-    h = _l().observe(signature, description, success=success)
+    h = _get_learner().observe(signature, description, success=success)
     return {"signature": h.signature, "confidence": round(h.confidence, 2),
             "promoted": h.promoted, "count": h.count}
 
@@ -60,7 +60,7 @@ def learn_habit(signature: str, description: str, success: bool = True) -> dict:
 def list_habits(include_archived: bool = False) -> list[dict]:
     """List learned habits (promoted patterns about the user)."""
     out = []
-    for h in _l().habits.values():
+    for h in _get_learner().habits.values():
         if h.archived and not include_archived:
             continue
         out.append({
@@ -74,38 +74,38 @@ def list_habits(include_archived: bool = False) -> list[dict]:
 @mcp.tool()
 def note_fact(fact: str) -> dict:
     """Append a durable semantic fact about the user/preferences/intentions."""
-    _s().append_semantic(fact)
+    _get_store().append_semantic(fact)
     return {"ok": True}
 
 
 @mcp.tool()
 def set_mannerism(preference: str) -> dict:
     """Record a communication/style preference (how the user likes responses)."""
-    Mannerisms(_s().root).append(preference)
+    Mannerisms(_get_store().root).append(preference)
     return {"ok": True}
 
 
 _intentions: Intentions | None = None
 
 
-def _i() -> Intentions:
+def _get_intentions() -> Intentions:
     global _intentions
     if _intentions is None:
-        _intentions = Intentions(_s().root)
+        _intentions = Intentions(_get_store().root)
     return _intentions
 
 
 @mcp.tool()
 def add_intention(title: str, priority: int = 3) -> dict:
     """Record something the user is trying to achieve (active goal)."""
-    it = _i().add(title, priority)
+    it = _get_intentions().add(title, priority)
     return {"id": it.id, "title": it.title, "priority": it.priority}
 
 
 @mcp.tool()
 def complete_intention(intention_id: str) -> dict:
     """Mark an intention/goal as completed."""
-    _i().complete(intention_id)
+    _get_intentions().complete(intention_id)
     return {"ok": True}
 
 
@@ -113,14 +113,14 @@ def complete_intention(intention_id: str) -> dict:
 def list_intentions() -> list[dict]:
     """List active intentions/goals, highest priority first."""
     return [{"id": i.id, "title": i.title, "priority": i.priority}
-            for i in _i().active()]
+            for i in _get_intentions().active()]
 
 
 @mcp.tool()
 def assemble_context(query: str = "", working: str = "", skills: str = "",
                      max_tokens: int = 6000) -> dict:
     """Build a token-bounded context block for the current turn."""
-    asm = ContextAssembler(_s(), Budget(total=max_tokens))
+    asm = ContextAssembler(_get_store(), Budget(total=max_tokens))
     sections = asm.build(query=query, working=working, skills=skills)
     return {
         "prompt": asm.render(sections),
@@ -133,7 +133,7 @@ def assemble_context(query: str = "", working: str = "", skills: str = "",
 def decay_habits() -> list[dict]:
     """Run daily decay; archives habits that stopped recurring."""
     return [{"signature": h.signature, "description": h.description}
-            for h in _l().tick_decay()]
+            for h in _get_learner().tick_decay()]
 
 
 @mcp.tool()

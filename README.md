@@ -4,7 +4,7 @@
 > assembles a token-bounded context for every turn, so the agent remembers across
 > turns without blowing its context window.
 
-![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python) ![License](https://img.shields.io/badge/License-GPL--3.0--or--later-blue) ![Tests](https://img.shields.io/badge/Tests-33-success) ![CI](https://github.com/gaganjainse/shesh-memory/actions/workflows/ci.yml/badge.svg)
+![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python) ![License](https://img.shields.io/badge/License-GPL--3.0--or--later-blue) ![Tests](https://img.shields.io/badge/Tests-39-success) ![CI](https://github.com/gaganjainse/shesh-memory/actions/workflows/ci.yml/badge.svg)
 
 - **License:** GPL-3.0-or-later
 - **Owner:** Gagan Jain ([@gaganjainse](https://github.com/gaganjainse))
@@ -25,7 +25,7 @@ token-bounded prompt is assembled from the relevant ones each turn.
 
 ```bash
 uv sync --extra dev
-uv run pytest -q        # 33 tests
+uv run pytest -q        # 39 tests
 uv run ruff check .
 ```
 
