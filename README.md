@@ -25,7 +25,7 @@ token-bounded prompt is assembled from the relevant ones each turn.
 
 ```bash
 uv sync --extra dev
-uv run pytest -q        # 39 tests
+uv run pytest -q        # the test suite
 uv run ruff check .
 ```
 
