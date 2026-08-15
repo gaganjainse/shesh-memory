@@ -7,6 +7,7 @@ from .context import Budget, ContextAssembler
 from .habits import HabitLearner
 from .intentions import Intentions, Mannerisms
 from .store import MemoryStore
+from .vectorstore import VectorStore
 
 mcp = _MCP("shesh-memory")
 
@@ -135,14 +136,6 @@ def decay_habits() -> list[dict]:
             for h in _l().tick_decay()]
 
 
-def main() -> None:
-    mcp.run(transport="stdio")
-
-
-if __name__ == "__main__":
-    main()
-
-
 @mcp.tool()
 def compact_memory(summarize_after_days: float = 14.0,
                    delete_after_days: float = 90.0) -> dict:
@@ -163,14 +156,14 @@ def compact_memory(summarize_after_days: float = 14.0,
 
 
 # ── semantic/vector search (optional) ────────────────────────────────
-_vstore = None
+_vstore: VectorStore | None = None
 
-def _vector_store():
+
+def _vector_store() -> VectorStore:
     global _vstore
     if _vstore is None:
         from .embeddings import LOCAL_DIM, local_embedder
         from .store import DATA_DIR
-        from .vectorstore import VectorStore
         _vstore = VectorStore(DATA_DIR / "vectors.sqlite", local_embedder(), LOCAL_DIM)
     return _vstore
 
@@ -191,3 +184,11 @@ def index_memory(text: str, memory_id: str | None = None,
     mid = memory_id or uuid.uuid4().hex[:12]
     _vector_store().upsert(mid, text, metadata or {})
     return {"ok": True, "id": mid}
+
+
+def main() -> None:
+    mcp.run(transport="stdio")
+
+
+if __name__ == "__main__":
+    main()
