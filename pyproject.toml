@@ -1,7 +1,7 @@
 [project]
 name = "shesh-memory"
 version = "0.1.0"
-description = "Shesh Mind: hierarchical memory, habit/intention learning, and token-bounded context assembly"
+description = "Shesh Memory: hierarchical memory, habit/intention learning, and token-bounded context assembly"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "GPL-3.0-or-later" }
