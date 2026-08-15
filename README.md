@@ -1,4 +1,4 @@
-# 🧠 shesh-memory
+# shesh-memory
 
 > **Hierarchical memory + habit learning for Shesh.** Keeps memory in layers and
 > assembles a token-bounded context for every turn, so the agent remembers across
@@ -15,7 +15,7 @@
 
 ## Why this repo exists
 
-A model can't remember across turns, and its context window is finite. This
+A model cannot remember across turns, and its context window is finite. This
 component solves both at once: memories are stored in layers by retention, and a
 token-bounded prompt is assembled from the relevant ones each turn.
 
@@ -42,7 +42,6 @@ uv run ruff check .
 Habit learning normalizes observations into signatures counted with reliability;
 a pattern becomes a **candidate habit** only past a confidence threshold, and
 habits decay/archive when stale — promotions are reviewable, never silent.
-
 
 > **Reproducible install:** `uv.lock` pins the full dependency tree. Install with
 > `uv sync --frozen` (or `uv pip install -r <(uv export --frozen)`) for a locked build.
