@@ -19,7 +19,7 @@ import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
-DATA_DIR = Path.home() / ".local" / "share" / "sesha" / "memory"
+DATA_DIR = Path.home() / ".local" / "share" / "shesh" / "memory"
 
 
 @dataclass
